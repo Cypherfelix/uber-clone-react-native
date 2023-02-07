@@ -1,15 +1,67 @@
 import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import tw from 'tailwind-react-native-classnames'
 import NavOptions from '../components/NavOptions'
 import { GOOGLE_MAPS_APIKEY } from "@env"
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { useDispatch } from 'react-redux'
 import { setDestination, setOrigin } from '../slices/navSlice'
+import * as Location from "expo-location"
+
+interface Origin {
+    location: {
+        lat: Number,
+        lng: Number
+    },
+    description: String
+}
 
 const HomeScreen = () => {
     const dispatch = useDispatch();
 
+    /**
+     * @type {Origin}
+     */
+    let ori = {
+        description: "",
+        location: {
+            lat: null,
+            lng: null
+        }
+    };
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+            ori.description = "current location";
+            ori.location.lat = location.coords.latitude;
+            ori.location.lng = location.coords.longitude;
+
+            dispatch(setOrigin(ori))
+
+            dispatch(setDestination(null))
+
+            console.log(ori);
+            return;
+        })();
+    }, []);
+
+    let text = 'Waiting..';
+    if (errorMsg) {
+        text = errorMsg;
+    } else if (location) {
+        text = JSON.stringify(location);
+    }
 
     return (
         <SafeAreaView style={tw`bg-white h-full`}>
