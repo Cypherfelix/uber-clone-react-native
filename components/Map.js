@@ -2,28 +2,21 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useReducer, useRef, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import tw from 'tailwind-react-native-classnames'
-import { useSelector } from 'react-redux'
-import { selectDestination, selectOrigin } from '../slices/navSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectDestination, selectOrigin, setTravelTimeInformation } from '../slices/navSlice'
 import MapViewDirections from 'react-native-maps-directions'
 import { GOOGLE_MAPS_APIKEY } from "@env"
 
 
 const Map = () => {
-    const [ignored, forceUpdate] = useReducer(x => x + 1);
     const origin = useSelector(selectOrigin);
     const destination = useSelector(selectDestination);
-    const [v, setV] = useState(0);
+    const dispatch = useDispatch();
+
     /**
      * @type {React.MutableRefObject<MapView>}
      */
     const mapRef = useRef(null);
-
-    const [state, setState] = useState({
-        delta: {
-            expected: 0.005,
-            current: 0.005,
-        },
-    });
 
     useEffect(() => {
         if (!origin || !destination) return;
@@ -43,34 +36,30 @@ const Map = () => {
             mapRef.current.fitToSuppliedMarkers(["origin"], {
                 edgePadding: { top: 50, right: 50, bottom: 50, left: 50 }
             });
-            console.log("Not done");
         }, 1000);
         return () => clearInterval(interval);
     }, [origin, destination])
 
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setState(prevState => ({
-    //             ...prevState,
-    //             ...Object.keys(prevState).reduce((acc, key) => {
-    //                 if (prevState[key].current < prevState[key].expected) {
-    //                     return {
-    //                         ...acc,
-    //                         [key]: {
-    //                             ...prevState[key],
-    //                             current: prevState[key].current + Math.abs(prevState[key].expected / 10),
-    //                         },
-    //                     };
-    //                 }
-    //                 return acc;
-    //             }, {}),
-    //         }));
-    //     }, 30);
+    useEffect(() => {
+        if (!origin || !destination) return;
+        const getTravelTime = async () => {
+            const URL = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_MAPS_APIKEY}`;
 
-    //     return () => clearInterval(interval);
-    // }, [state]);
+            fetch(URL)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data.rows[0].elements[0]);
+                    dispatch(setTravelTimeInformation(data.rows[0].elements[0]))
+                })
+        }
+        const interval = setTimeout(() => {
+            getTravelTime();
+        }, 1000);
+        return () => clearInterval(interval);
 
+
+    }, [origin, destination, GOOGLE_MAPS_APIKEY])
 
     return (
         <MapView

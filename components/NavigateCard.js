@@ -15,6 +15,7 @@ const NavigateCard = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const des = useSelector(selectDestination);
+    const origin = useSelector(selectOrigin);
     const [done, setDone] = useState(false);
 
     return (
@@ -54,7 +55,9 @@ const NavigateCard = () => {
                         minLength={2}
                         query={{
                             key: GOOGLE_MAPS_APIKEY,
-                            language: 'en'
+                            language: 'en',
+                            radius: 50000,
+                            location: origin?.location
                         }}
                         nearbyPlacesAPI="GooglePlacesSearch"
                     />
