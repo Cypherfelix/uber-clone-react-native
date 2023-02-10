@@ -20,7 +20,7 @@ const NavigateCard = () => {
 
     return (
         <SafeAreaView style={tw`bg-white flex-1`}>
-            <Text style={tw`text-center py-5 text-xl`}>Good Morning, Felix </Text>
+            <Text style={tw`text-center py-2  text-xl`}>Good Morning, Felix </Text>
             <View style={tw`border-t border-gray-200 flex-shrink`}>
                 <View>
                     <GooglePlacesAutocomplete
@@ -29,7 +29,7 @@ const NavigateCard = () => {
                         styles={{
                             container: {
                                 backgroundColor: "white",
-                                paddingTop: 20,
+                                paddingTop: 5,
                                 flex: 0,
                             },
                             textInput: {
@@ -56,6 +56,7 @@ const NavigateCard = () => {
                         query={{
                             key: GOOGLE_MAPS_APIKEY,
                             language: 'en',
+                            components: 'country:ke',
                             radius: 50000,
                             location: origin?.location
                         }}

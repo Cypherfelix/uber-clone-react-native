@@ -8,6 +8,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'react-native';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 const data = [
     {
@@ -29,6 +31,10 @@ const data = [
         image: "https://links.papareact.com/7pf",
     },
 ];
+const SURGE_CHARGE_RATE = 65;
+const BASE_FARE = 122.61;
+const PER_MILE = 1.06 * 25;
+const PER_MIN = 4.63;
 
 const RideOptionCard = () => {
     const [selected, setSelected] = useState(null);
@@ -78,15 +84,34 @@ const RideOptionCard = () => {
 
                         <View style={tw`-ml-6`}>
                             <Text style={tw`text-xl font-semibold`}>{title}</Text>
-                            <Text>{travelTimeInformation?.duration.text} Travel time</Text>
+                            <Text>{travelTimeInformation?.duration.text}</Text>
                         </View>
 
-                        <Text>$99</Text>
+                        <Text>
+
+                            {/* {
+                                new Intl.NumberFormat('en-us', {
+                                    style: "currency",
+                                    currency: "KSH"
+                                }).format(
+                                    (travelTimeInformation?.duration.value * SURGE_CHARGE_RATE * multiplier) / 100
+                                )
+                            } */}
+                            {
+                                new Intl.NumberFormat('en-us', {
+                                    style: "currency",
+                                    currency: "KSH"
+                                }).format(
+                                    (
+                                        (travelTimeInformation?.duration.value / 60 * PER_MIN) + (travelTimeInformation?.distance.value * PER_MILE / 1611.52672) + BASE_FARE) * multiplier
+                                )
+                            }
+                        </Text>
                     </TouchableOpacity>
                 )}
             />
 
-            <View>
+            <View style={tw`mt-auto border-t border-gray-200`}>
                 <TouchableOpacity disabled={!selected} style={tw`bg-black py-3 m-3 ${!selected && "bg-gray-300"}`}>
                     <Text style={tw`text-center text-white text-xl`}>
                         Choose {selected?.title}

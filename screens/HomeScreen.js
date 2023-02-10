@@ -44,15 +44,17 @@ const HomeScreen = () => {
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
+
             ori.description = "current location";
             ori.location.lat = location.coords.latitude;
             ori.location.lng = location.coords.longitude;
 
             dispatch(setOrigin(ori))
 
+
             dispatch(setDestination(null))
 
-            console.log(ori);
+            console.log(location);
             return;
         })();
     }, []);
@@ -103,8 +105,10 @@ const HomeScreen = () => {
                     minLength={2}
                     query={{
                         key: GOOGLE_MAPS_APIKEY,
-                        language: 'en'
+                        language: 'en',
+                        components: 'country:ke',
                     }}
+
                 />
 
                 <NavOptions />

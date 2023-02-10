@@ -10,7 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MapScreen from './screens/MapScreen';
 import { useEffect, useState } from 'react';
 import { Point } from "react-native-maps"
-import { setDestination, setOrigin } from './slices/navSlice'
+import { setDestination, setOrigin } from './slices/navSlice';
 
 export interface Origin {
   location: Point,
@@ -26,7 +26,7 @@ export default function App() {
         <SafeAreaProvider>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
+            // keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
             style={{ flex: 1 }}>
             <Stack.Navigator>
               <Stack.Screen
