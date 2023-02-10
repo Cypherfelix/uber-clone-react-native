@@ -1,16 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import tw from "tailwind-react-native-classnames";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { useDispatch } from 'react-redux';
-import { setDestination } from '../slices/navSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDestination, selectOrigin, setDestination } from '../slices/navSlice';
 import { GOOGLE_MAPS_APIKEY } from "@env"
 import { useNavigation } from '@react-navigation/native';
 
 const NavigateCard = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const des = useSelector(selectDestination);
+    const [done, setDone] = useState(false);
+
     return (
         <SafeAreaView style={tw`bg-white flex-1`}>
             <Text style={tw`text-center py-5 text-xl`}>Good Morning, Felix </Text>
@@ -39,9 +42,8 @@ const NavigateCard = () => {
                             dispatch(setDestination({
                                 location: details?.geometry.location,
                                 description: data.description
-                            }))
-
-                            navigation.navigate("RideOptionCard")
+                            }));
+                            navigation.navigate("RideOptionCard");
                         }}
                         fetchDetails={true}
                         returnKeyType={"search"}

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import tw from 'tailwind-react-native-classnames'
 
-import React from 'react'
+import React, { useReducer } from 'react'
 import Map from '../components/Map'
 import { createStackNavigator } from '@react-navigation/stack'
 import RideOptionCard from '../components/RideOptionCard'
@@ -9,10 +9,11 @@ import NavigateCard from '../components/NavigateCard'
 
 const MapScreen = () => {
     const Stack = createStackNavigator();
+    const [ignored, forceUpdate] = useReducer(x => x + 1);
     return (
         <View>
             <View style={tw`h-1/2`}>
-                <Map />
+                <Map forceUpdate={forceUpdate} />
             </View>
             <View style={tw`h-1/2`}>
                 <Stack.Navigator>

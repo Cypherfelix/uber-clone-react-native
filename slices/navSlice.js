@@ -28,7 +28,7 @@ export const { setDestination, setOrigin, setTravelTimeInformation } = navSlice.
 
 // Selectors
 export const selectOrigin = (state) => state.nav.origin;
-export const selectDestination = (state) => state.nav.Destination;
+export const selectDestination = (state) => state.nav.destination;
 export const selectTravelTimeInformation = (state) => state.nav.TravelTimeInformation;
 
 export default navSlice.reducer;
